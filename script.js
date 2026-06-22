@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // permitir abrir com Enter/Space (acessibilidade)
   thumb.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
       const src = thumb.dataset.large || thumb.src;
       openLightbox(src, thumb.alt);
@@ -65,4 +65,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // impedir clique na imagem de propagar (evita fechar)
   lightboxImage.addEventListener('click', (e) => e.stopPropagation());
+
+  // --- Novas melhorias: fallback para imagens quebradas e carregamento seguro ---
+
+  // Função que aplica fallback a uma imagem quando ela falhar no carregamento
+  function applyImageFallback(img) {
+    if (!img) return;
+    // não reaplicar
+    if (img.dataset.fallbackApplied) return;
+    img.addEventListener('error', function handleError() {
+      if (img.dataset.fallbackApplied) return;
+      img.dataset.fallbackApplied = '1';
+      // usar placeholder adequado ao tamanho se disponível
+      const placeholderSmall = 'https://via.placeholder.com/400x300?text=Imagem+indisponível';
+      const placeholderLarge = 'https://via.placeholder.com/800x800?text=Imagem+indisponível';
+      // se for a lightbox, usar a variante grande
+      const fallback = img.classList.contains('lightbox-image') ? placeholderLarge : (img.classList.contains('thumb') ? 'https://via.placeholder.com/150x150?text=Miniatura' : placeholderSmall);
+      console.warn('Imagem falhou ao carregar, aplicando fallback:', img, '->', fallback);
+      img.src = fallback;
+    });
+  }
+
+  // Aplicar fallback a todas as imagens visíveis na página
+  document.querySelectorAll('img').forEach(img => {
+    applyImageFallback(img);
+    // caso o site use data-src (lazy loading), tentar ativar
+    if ((!img.src || img.src.trim() === '') && img.dataset.src) {
+      img.src = img.dataset.src;
+    }
+  });
+
+  // Garantir fallback também na imagem da lightbox (evita src vazio após erro)
+  if (lightboxImage) {
+    lightboxImage.addEventListener('error', () => {
+      if (lightboxImage.dataset.fallbackApplied) return;
+      lightboxImage.dataset.fallbackApplied = '1';
+      lightboxImage.src = 'https://via.placeholder.com/800x800?text=Imagem+indisponível';
+    });
+  }
+
+  // Tentar detectar e corrigir caminhos relativos simples que podem ter sido quebrados
+  // Ex.: './imgs/pic.jpg' -> '/imgs/pic.jpg' ou 'imgs/pic.jpg'
+  document.querySelectorAll('img').forEach(img => {
+    if (!img.src) return;
+    try {
+      const url = new URL(img.src, location.href);
+      // se hostname é mesma do site e retorno 404 causado por rota do GitHub Pages pode ocorrer;
+      // aqui apenas tentamos normalizar caminhos relativos começando com './' ou '../'
+      if (img.getAttribute('src') && img.getAttribute('src').startsWith('./')) {
+        const altPath = img.getAttribute('src').replace(/^\.\//, '/');
+        // testar altPath sem enviar requests: atualizar para o altPath — se falhar, fallback acima tratará
+        img.src = altPath;
+      }
+    } catch (e) {
+      // URL inválida, deixar fallback lidar com o erro
+    }
+  });
+
+  // Observador para aplicar fallback em imagens adicionadas dinamicamente (ex.: carregamento tardio)
+  const observer = new MutationObserver(mutations => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1) {
+          if (node.tagName === 'IMG') applyImageFallback(node);
+          node.querySelectorAll && node.querySelectorAll('img').forEach(applyImageFallback);
+        }
+      }
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
 });
