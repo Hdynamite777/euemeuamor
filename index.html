@@ -115,7 +115,7 @@
         <p>De H para: N &lt;3</p>
         <div class="hint" id="hint">
             <span id="mobileTip">Toque na tela para continuar</span>
-            <span id="desktopTip"> | Pressione ESC para sair</span>
+            <span id="desktopTip"> | Pressione ENTER para continuar</span>
         </div>
     </div>
 
@@ -185,9 +185,9 @@
             }
         });
 
-        // Evento de teclado (ESC)
+        // Evento de teclado (ENTER)
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Enter') {
                 exitWelcome();
             }
         });
