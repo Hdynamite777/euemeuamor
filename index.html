@@ -129,6 +129,13 @@
             text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
         }
 
+        .click-counter {
+            color: #ff69b4;
+            font-size: 12px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
         .hidden {
             display: none;
         }
@@ -139,10 +146,65 @@
             color: white;
             z-index: 10;
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .main-content.show {
             display: block;
+        }
+
+        .content-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 182, 193, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 182, 193, 0.4);
+        }
+
+        .content-section h2 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 2em;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        }
+
+        .content-section p {
+            color: #ffb6c1;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            background: rgba(255, 182, 193, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid rgba(255, 105, 180, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .gallery-item p {
+            font-size: 14px;
+            color: #ffb6c1;
         }
     </style>
 </head>
@@ -159,14 +221,46 @@
         <p>De: H, para N&lt;3</p>
         <div class="hint" id="hint">
             <span id="mobileTip">Toque na tela para continuar</span>
-            <span id="desktopTip"> | Pressione ENTER para continuar</span>
+            <span id="desktopTip">Pressione ENTER para continuar</span>
         </div>
+        <div class="click-counter" id="clickCounter"></div>
     </div>
 
     <!-- Conteúdo principal (após sair da tela de boas-vindas) -->
     <div id="mainContent" class="main-content">
-        <h1>Conteúdo Principal</h1>
-        <p>Você saiu da tela de boas-vindas!</p>
+        <h1>Mensagem Especial 💕</h1>
+        
+        <div class="content-section">
+            <h2>Para você</h2>
+            <p>Você é especial e merece saber isso todos os dias. Este é um pequeno presente do meu coração para o seu.</p>
+        </div>
+
+        <div class="content-section">
+            <h2>Galeria de Momentos</h2>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <p>❤️ Foto 1</p>
+                    <p>Um momento especial</p>
+                </div>
+                <div class="gallery-item">
+                    <p>💕 Foto 2</p>
+                    <p>Cheio de amor</p>
+                </div>
+                <div class="gallery-item">
+                    <p>💖 Foto 3</p>
+                    <p>Memorável</p>
+                </div>
+                <div class="gallery-item">
+                    <p>💗 Foto 4</p>
+                    <p>Para sempre</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Uma mensagem final</h2>
+            <p>Obrigado por ser quem você é. Você torna cada dia melhor com sua presença. Te amo. 💕</p>
+        </div>
     </div>
 
     <script>
@@ -239,6 +333,10 @@
             mobileTip.style.display = 'none';
         }
 
+        // Contador de cliques/presses
+        let clickCount = 0;
+        const requiredClicks = 2;
+
         // Função para sair da tela de boas-vindas
         const exitWelcome = () => {
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -248,24 +346,42 @@
             mainContent.classList.add('show');
         };
 
-        // Evento de toque (mobile)
+        // Atualizar contador
+        const updateCounter = () => {
+            clickCount++;
+            const counterElement = document.getElementById('clickCounter');
+            const remaining = requiredClicks - clickCount;
+            
+            if (remaining > 0) {
+                counterElement.textContent = `${remaining} clique(s) para continuar`;
+            }
+            
+            if (clickCount >= requiredClicks) {
+                exitWelcome();
+            }
+        };
+
+        // Evento de toque (mobile) - 2 toques
         document.addEventListener('touchstart', (event) => {
             const welcomeScreen = document.getElementById('welcomeScreen');
             if (!welcomeScreen.classList.contains('hidden')) {
-                exitWelcome();
+                updateCounter();
             }
         });
 
-        // Evento de teclado (ENTER)
+        // Evento de teclado (ENTER) - 2 vezes
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                exitWelcome();
+                const welcomeScreen = document.getElementById('welcomeScreen');
+                if (!welcomeScreen.classList.contains('hidden')) {
+                    updateCounter();
+                }
             }
         });
 
         // Evento de clique (alternativo para desktop)
         document.getElementById('welcomeScreen').addEventListener('click', (event) => {
-            exitWelcome();
+            updateCounter();
         });
     </script>
 </body>
