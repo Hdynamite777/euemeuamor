@@ -148,6 +148,7 @@
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+            padding: 10px;
         }
 
         .main-content.show {
@@ -176,6 +177,50 @@
             line-height: 1.6;
         }
 
+        /* Estilos para o texto expandível */
+        .expandable-text {
+            text-align: left;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .text-content {
+            max-height: 150px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            position: relative;
+        }
+
+        .text-content.expanded {
+            max-height: none;
+        }
+
+        .text-content.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, rgba(255, 182, 193, 0.15));
+        }
+
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: #ff69b4;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 5px;
+            transition: color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .read-more-btn:hover {
+            color: #ff1493;
+        }
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -202,6 +247,7 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
         }
 
         .gallery-item p {
@@ -222,6 +268,12 @@
             max-width: 100%;
             width: 100%;
             height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .youtube-container iframe {
+                height: 250px;
+            }
         }
 
         .youtube-link {
@@ -354,24 +406,29 @@
         
         <div class="content-section">
             <h2>Para você</h2>
-            <p>oi meu bem, não sou bom com textos, mas vamo lá.. desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça [...]
+            <div class="expandable-text">
+                <div class="text-content collapsed" id="mainText">
+                    <p>oi meu bem, não sou bom com textos, mas vamo lá.. desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça aos pés. sua forma de falar, seu jogo de cintura, seu riso, cada detalhe teu me fascina. você é incrível, uma mistura de força e sensibilidade que me encanta mais a cada dia. obrigado por existir e escolher estar ao meu lado. você torna tudo melhor. 💕</p>
+                </div>
+                <button class="read-more-btn" id="expandBtn" onclick="toggleText()">... ler mais</button>
+            </div>
         </div>
 
         <div class="content-section">
             <h2>Galeria de Momentos</h2>
             <div class="gallery">
                 <div class="gallery-item">
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwwSBxUXBxcUFxcYGBcgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQICAgMDAwYDAw[...]
+                    <img src="https://via.placeholder.com/300x250/ff69b4/ffffff?text=Nós+Dois" alt="Nós Dois">
                     <p>❤️ Nós Dois</p>
                     <p>Um momento especial juntos</p>
                 </div>
                 <div class="gallery-item">
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwwSBxUXBxcUFxcYGBcgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQICAgMDAwYDAw[...]
+                    <img src="https://via.placeholder.com/300x250/ff1493/ffffff?text=Momentos+Bonitos" alt="Momentos Bonitos">
                     <p>💕 Momentos Bonitos</p>
                     <p>Cheio de amor e risadas</p>
                 </div>
                 <div class="gallery-item">
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwwSBxUXBxcUFxcYGBcgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQICAgMDAwYDAw[...]
+                    <img src="https://via.placeholder.com/300x250/ff105e/ffffff?text=Sempre+Juntos" alt="Sempre Juntos">
                     <p>💖 Sempre Juntos</p>
                     <p>Para sempre memorável</p>
                 </div>
@@ -397,11 +454,25 @@
     <div id="flowerLightbox" class="lightbox">
         <div class="lightbox-content">
             <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwwSBxUXBxcUFxcYGBcgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQICAgMDAwYDAw[...]" alt="Flor especial para você" />
+            <img src="https://via.placeholder.com/600x600/ff69b4/ffffff?text=Flor+Especial" alt="Flor especial para você" />
         </div>
     </div>
 
     <script>
+        // Função para expandir/recolher o texto
+        function toggleText() {
+            const textContent = document.getElementById('mainText');
+            const expandBtn = document.getElementById('expandBtn');
+            
+            textContent.classList.toggle('expanded');
+            
+            if (textContent.classList.contains('expanded')) {
+                expandBtn.textContent = '... ler menos';
+            } else {
+                expandBtn.textContent = '... ler mais';
+            }
+        }
+
         // Criar corações flutuantes
         function createHearts() {
             const romanticBackground = document.getElementById('romanticBackground');
