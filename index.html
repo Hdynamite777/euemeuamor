@@ -209,7 +209,7 @@
             color: #ffb6c1;
         }
 
-        .spotify-container {
+        .youtube-container {
             margin: 30px 0;
             padding: 20px;
             display: flex;
@@ -217,9 +217,116 @@
             align-items: center;
         }
 
-        .spotify-container iframe {
+        .youtube-container iframe {
             border-radius: 12px;
             max-width: 100%;
+            width: 100%;
+            height: 400px;
+        }
+
+        .youtube-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .youtube-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+        }
+
+        /* Estilos da Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            color: #ff69b4;
+        }
+
+        .flower-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: rgba(255, 105, 180, 0.5);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: 2px solid rgba(255, 105, 180, 0.8);
+        }
+
+        .flower-button:hover {
+            background: rgba(255, 105, 180, 0.8);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
         }
     </style>
 </head>
@@ -247,7 +354,7 @@
         
         <div class="content-section">
             <h2>Para você</h2>
-            <p>oi meu bem, não sou bom com textos, mas vamo lá.. desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça aos pés, tu não tem noção do quanto te amo e te quero, talvez eu não demonstre tanto quanto tu queira, mas quero continuar te amando nas pequenas atitudes.. espero que você me entenda e deixe que eu faça parte desse capitulo da sua vida, é cedo pra dizer que te quero pra toda vida.. mas quem sabe? te amo em demasia, te quero muito. ❤️</p>
+            <p>oi meu bem, não sou bom com textos, mas vamo lá.. desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça [...]
         </div>
 
         <div class="content-section">
@@ -273,14 +380,24 @@
 
         <div class="content-section">
             <h2>Uma Música Para Você 🎵</h2>
-            <div class="spotify-container">
-                <iframe src="https://open.spotify.com/embed/track/3mAJwUTAMMMmax3o2bBKVx?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="youtube-container">
+                <iframe width="100%" height="400" src="https://www.youtube.com/embed/V141wUSkTfk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
+            <a href="https://youtu.be/V141wUSkTfk?si=bMD0HEocGj6T3FJ-" target="_blank" class="youtube-link">▶️ Abrir no YouTube</a>
         </div>
 
         <div class="content-section">
             <h2>Uma mensagem final</h2>
             <p>Obrigado por ser quem você é. Você torna cada dia melhor com sua presença. Te amo. 💕</p>
+            <button class="flower-button" onclick="openLightbox()">🌹 Ver Surpresa Floral 🌹</button>
+        </div>
+    </div>
+
+    <!-- Lightbox da Flor -->
+    <div id="flowerLightbox" class="lightbox">
+        <div class="lightbox-content">
+            <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwwSBxUXBxcUFxcYGBcgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQICAgMDAwYDAw[...]" alt="Flor especial para você" />
         </div>
     </div>
 
@@ -403,6 +520,29 @@
         // Evento de clique (alternativo para desktop)
         document.getElementById('welcomeScreen').addEventListener('click', (event) => {
             updateCounter();
+        });
+
+        // Funções da Lightbox
+        function openLightbox() {
+            document.getElementById('flowerLightbox').classList.add('show');
+        }
+
+        function closeLightbox() {
+            document.getElementById('flowerLightbox').classList.remove('show');
+        }
+
+        // Fechar lightbox ao clicar fora da imagem
+        document.getElementById('flowerLightbox').addEventListener('click', (event) => {
+            if (event.target.id === 'flowerLightbox') {
+                closeLightbox();
+            }
+        });
+
+        // Fechar lightbox com ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
         });
     </script>
 </body>
