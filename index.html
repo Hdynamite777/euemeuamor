@@ -16,9 +16,46 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #000;
+            background: linear-gradient(135deg, #1a0a1a 0%, #2d1428 25%, #3d1f35 50%, #2d1428 75%, #1a0a1a 100%);
             overflow: hidden;
             position: relative;
+        }
+
+        /* Fundo romântico com partículas flutuantes */
+        .romantic-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Corações flutuantes */
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.6;
+            animation: float 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         /* Estrelas do espaço */
@@ -33,9 +70,10 @@
 
         .star {
             position: absolute;
-            background: white;
+            background: rgba(255, 182, 193, 0.6);
             border-radius: 50%;
             animation: twinkle 3s infinite;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
         }
 
         @keyframes twinkle {
@@ -49,43 +87,46 @@
 
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 182, 193, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.3), inset 0 1px 20px rgba(255, 182, 193, 0.2);
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             user-select: none;
             z-index: 10;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 182, 193, 0.4);
         }
 
         .container:active {
             transform: scale(0.98);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5), inset 0 1px 20px rgba(255, 182, 193, 0.2);
         }
 
         h1 {
             color: #fff;
             margin-bottom: 20px;
             font-size: 3em;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 0 60px rgba(255, 20, 147, 0.6);
+            letter-spacing: 2px;
         }
 
         p {
             color: #fff;
-            font-size: 20px;
+            font-size: 22px;
             margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+            letter-spacing: 1px;
         }
 
         .hint {
-            color: #aaa;
-            font-size: 12px;
-            margin-top: 20px;
+            color: #ffb6c1;
+            font-size: 13px;
+            margin-top: 25px;
             font-style: italic;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
         }
 
         .hidden {
@@ -106,13 +147,16 @@
     </style>
 </head>
 <body>
+    <!-- Fundo romântico com corações -->
+    <div class="romantic-background" id="romanticBackground"></div>
+
     <!-- Fundo com estrelas -->
     <div class="stars" id="starsContainer"></div>
 
     <!-- Tela de boas-vindas -->
     <div id="welcomeScreen" class="container">
         <h1>Com Amor 💕</h1>
-        <p>De H para: N &lt;3</p>
+        <p>De: H, para N&lt;3</p>
         <div class="hint" id="hint">
             <span id="mobileTip">Toque na tela para continuar</span>
             <span id="desktopTip"> | Pressione ENTER para continuar</span>
@@ -126,16 +170,43 @@
     </div>
 
     <script>
+        // Criar corações flutuantes
+        function createHearts() {
+            const romanticBackground = document.getElementById('romanticBackground');
+            const heartCount = 8;
+            const hearts = ['❤️', '💕', '💖', '💗', '💘', '💝'];
+
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                
+                const startX = Math.random() * 100;
+                heart.style.left = startX + '%';
+                heart.style.bottom = '-50px';
+                heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+
+                romanticBackground.appendChild(heart);
+
+                // Remover o elemento após a animação terminar
+                setTimeout(() => {
+                    heart.remove();
+                }, 10000);
+            }, 500);
+        }
+
+        createHearts();
+
         // Criar estrelas no fundo
         function createStars() {
             const starsContainer = document.getElementById('starsContainer');
-            const starCount = 100;
+            const starCount = 80;
 
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 
-                const size = Math.random() * 3 + 0.5;
+                const size = Math.random() * 2 + 0.5;
                 const x = Math.random() * 100;
                 const y = Math.random() * 100;
                 const duration = Math.random() * 2 + 2;
