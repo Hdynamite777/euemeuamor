@@ -1,620 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Com Amor</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a0a1a 0%, #2d1428 25%, #3d1f35 50%, #2d1428 75%, #1a0a1a 100%);
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Fundo romântico com partículas flutuantes */
-        .romantic-background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        /* Corações flutuantes */
-        .heart {
-            position: absolute;
-            font-size: 2em;
-            opacity: 0.6;
-            animation: float 8s infinite ease-in-out;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Estrelas do espaço */
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        .star {
-            position: absolute;
-            background: rgba(255, 182, 193, 0.6);
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-            box-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
-        }
-
-        @keyframes twinkle {
-            0%, 100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(255, 182, 193, 0.15);
-            backdrop-filter: blur(15px);
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.3), inset 0 1px 20px rgba(255, 182, 193, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            user-select: none;
-            z-index: 10;
-            position: relative;
-            border: 2px solid rgba(255, 182, 193, 0.4);
-        }
-
-        .container:active {
-            transform: scale(0.98);
-            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5), inset 0 1px 20px rgba(255, 182, 193, 0.2);
-        }
-
-        h1 {
-            color: #fff;
-            margin-bottom: 20px;
-            font-size: 3em;
-            text-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 0 60px rgba(255, 20, 147, 0.6);
-            letter-spacing: 2px;
-        }
-
-        p {
-            color: #fff;
-            font-size: 22px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
-            letter-spacing: 1px;
-        }
-
-        .hint {
-            color: #ffb6c1;
-            font-size: 13px;
-            margin-top: 25px;
-            font-style: italic;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
-        }
-
-        .click-counter {
-            color: #ff69b4;
-            font-size: 12px;
-            margin-top: 10px;
-            font-style: italic;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .main-content {
-            display: none;
-            text-align: center;
-            color: white;
-            z-index: 10;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .main-content.show {
-            display: block;
-        }
-
-        .content-section {
-            margin: 30px 0;
-            padding: 20px;
-            background: rgba(255, 182, 193, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 15px;
-            border: 2px solid rgba(255, 182, 193, 0.4);
-        }
-
-        .content-section h2 {
-            color: #fff;
-            margin-bottom: 15px;
-            font-size: 2em;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
-        }
-
-        .content-section p {
-            color: #ffb6c1;
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        /* Estilos para o texto expandível */
-        .expandable-text {
-            text-align: left;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .text-content {
-            max-height: 150px;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            position: relative;
-        }
-
-        .text-content.expanded {
-            max-height: none;
-        }
-
-        .text-content.collapsed::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(transparent, rgba(255, 182, 193, 0.15));
-        }
-
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: #ff69b4;
-            font-size: 18px;
-            cursor: pointer;
-            font-weight: bold;
-            padding: 5px;
-            transition: color 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .read-more-btn:hover {
-            color: #ff1493;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .gallery-item {
-            background: rgba(255, 182, 193, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            border: 2px solid rgba(255, 105, 180, 0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
-        }
-
-        .gallery-item p {
-            font-size: 14px;
-            color: #ffb6c1;
-        }
-
-        .youtube-container {
-            margin: 30px 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .youtube-container iframe {
-            border-radius: 12px;
-            max-width: 100%;
-            width: 100%;
-            height: 400px;
-        }
-
-        @media (max-width: 768px) {
-            .youtube-container iframe {
-                height: 250px;
-            }
-        }
-
-        .youtube-link {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff0000, #cc0000);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 18px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        }
-
-        .youtube-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
-        }
-
-        /* Estilos da Lightbox */
-        .lightbox {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .lightbox.show {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .lightbox-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            animation: zoomIn 0.3s ease;
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .lightbox-content img {
-            width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .lightbox-close:hover {
-            color: #ff69b4;
-        }
-
-        .flower-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 30px;
-            background: rgba(255, 105, 180, 0.5);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            border: 2px solid rgba(255, 105, 180, 0.8);
-        }
-
-        .flower-button:hover {
-            background: rgba(255, 105, 180, 0.8);
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Carta</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- Fundo romântico com corações -->
-    <div class="romantic-background" id="romanticBackground"></div>
+  <main class="card">
+    <header class="card-header">
+      <h1>Para você</h1>
+    </header>
 
-    <!-- Fundo com estrelas -->
-    <div class="stars" id="starsContainer"></div>
-
-    <!-- Tela de boas-vindas -->
-    <div id="welcomeScreen" class="container">
-        <h1>Com Amor 💕</h1>
-        <p>De: H, para N&lt;3</p>
-        <div class="hint" id="hint">
-            <span id="mobileTip">Toque na tela para continuar</span>
-            <span id="desktopTip">Pressione ENTER para continuar</span>
+    <section class="photos">
+      <figure class="photo">
+        <img src="https://via.placeholder.com/400x300?text=Foto+1" alt="Foto 1" />
+        <div class="hearts">
+          <span class="heart">❤</span><span class="heart">❤</span><span class="heart">❤</span>
         </div>
-        <div class="click-counter" id="clickCounter"></div>
+      </figure>
+
+      <figure class="photo">
+        <img src="https://via.placeholder.com/400x300?text=Foto+2" alt="Foto 2" />
+        <div class="hearts">
+          <span class="heart">❤</span><span class="heart">❤</span><span class="heart">❤</span>
+        </div>
+      </figure>
+
+      <figure class="photo">
+        <img src="https://via.placeholder.com/400x300?text=Foto+3" alt="Foto 3" />
+        <div class="hearts">
+          <span class="heart">❤</span><span class="heart">❤</span><span class="heart">❤</span>
+        </div>
+      </figure>
+
+      <figure class="photo">
+        <img src="https://via.placeholder.com/400x300?text=Foto+4" alt="Foto 4" />
+        <div class="hearts">
+          <span class="heart">❤</span><span class="heart">❤</span><span class="heart">❤</span>
+        </div>
+      </figure>
+    </section>
+
+    <section class="letter">
+      <p>oi meu bem, não sou bom com textos, mas vamo lá..</p>
+      <p>desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça aos pés, tu não tem noção do quanto te amo e te quero, [...]
+      <p>espero que você me entenda e deixe que eu faça parte desse capitulo da sua vida, é cedo pra dizer que te quero pra toda vida.. mas quem sabe? te amo em demasia, te quero muito. ❤️<[...]
+    </section>
+
+    <footer class="media-block">
+      <div class="video-wrap">
+        <!-- YouTube embed: Planos (BK) -->
+        <iframe src="https://www.youtube.com/embed/V141wUSkTfk" title="Planos - BK" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+
+      <div class="thumb-wrap">
+        <!-- agora a miniatura usa data-large para a lightbox -->
+        <img src="https://via.placeholder.com/150x150?text=Miniatura" alt="Miniatura" class="thumb" data-large="https://via.placeholder.com/800x800?text=Imagem+Grande"
+             role="button" aria-label="Abrir miniatura em visualização ampliada" tabindex="0" />
+        <p class="thumb-caption">Miniatura — toque para ver maior</p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Visualização de imagem">
+    <button class="lightbox-close" aria-label="Fechar visualização">&times;</button>
+    <div class="lightbox-inner" tabindex="-1">
+      <img src="" alt="Imagem ampliada" class="lightbox-image" />
     </div>
+  </div>
 
-    <!-- Conteúdo principal (após sair da tela de boas-vindas) -->
-    <div id="mainContent" class="main-content">
-        <h1>Mensagem Especial 💕</h1>
-        
-        <div class="content-section">
-            <h2>Para você</h2>
-            <div class="expandable-text">
-                <div class="text-content collapsed" id="mainText">
-                    <p>oi meu bem, não sou bom com textos, mas vamo lá.. desde a primeira vez q te vi, já reparei na tua beleza, tua delicadeza e esse jeito doce no olhar, te acho perfeita da cabeça aos pés. sua forma de falar, seu jogo de cintura, seu riso, cada detalhe teu me fascina. você é incrível, uma mistura de força e sensibilidade que me encanta mais a cada dia. obrigado por existir e escolher estar ao meu lado. você torna tudo melhor. 💕</p>
-                </div>
-                <button class="read-more-btn" id="expandBtn" onclick="toggleText()">... ler mais</button>
-            </div>
-        </div>
-
-        <div class="content-section">
-            <h2>Galeria de Momentos</h2>
-            <div class="gallery">
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/300x250/ff69b4/ffffff?text=Nós+Dois" alt="Nós Dois">
-                    <p>❤️ Nós Dois</p>
-                    <p>Um momento especial juntos</p>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/300x250/ff1493/ffffff?text=Momentos+Bonitos" alt="Momentos Bonitos">
-                    <p>💕 Momentos Bonitos</p>
-                    <p>Cheio de amor e risadas</p>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/300x250/ff105e/ffffff?text=Sempre+Juntos" alt="Sempre Juntos">
-                    <p>💖 Sempre Juntos</p>
-                    <p>Para sempre memorável</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-section">
-            <h2>Uma Música Para Você 🎵</h2>
-            <div class="youtube-container">
-                <iframe width="100%" height="400" src="https://www.youtube.com/embed/V141wUSkTfk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-            <a href="https://youtu.be/V141wUSkTfk?si=bMD0HEocGj6T3FJ-" target="_blank" class="youtube-link">▶️ Abrir no YouTube</a>
-        </div>
-
-        <div class="content-section">
-            <h2>Uma mensagem final</h2>
-            <p>Obrigado por ser quem você é. Você torna cada dia melhor com sua presença. Te amo. 💕</p>
-            <button class="flower-button" onclick="openLightbox()">🌹 Ver Surpresa Floral 🌹</button>
-        </div>
-    </div>
-
-    <!-- Lightbox da Flor -->
-    <div id="flowerLightbox" class="lightbox">
-        <div class="lightbox-content">
-            <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-            <img src="https://via.placeholder.com/600x600/ff69b4/ffffff?text=Flor+Especial" alt="Flor especial para você" />
-        </div>
-    </div>
-
-    <script>
-        // Função para expandir/recolher o texto
-        function toggleText() {
-            const textContent = document.getElementById('mainText');
-            const expandBtn = document.getElementById('expandBtn');
-            
-            textContent.classList.toggle('expanded');
-            
-            if (textContent.classList.contains('expanded')) {
-                expandBtn.textContent = '... ler menos';
-            } else {
-                expandBtn.textContent = '... ler mais';
-            }
-        }
-
-        // Criar corações flutuantes
-        function createHearts() {
-            const romanticBackground = document.getElementById('romanticBackground');
-            const heartCount = 8;
-            const hearts = ['❤️', '💕', '💖', '💗', '💘', '💝'];
-
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                
-                const startX = Math.random() * 100;
-                heart.style.left = startX + '%';
-                heart.style.bottom = '-50px';
-                heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
-
-                romanticBackground.appendChild(heart);
-
-                // Remover o elemento após a animação terminar
-                setTimeout(() => {
-                    heart.remove();
-                }, 10000);
-            }, 500);
-        }
-
-        createHearts();
-
-        // Criar estrelas no fundo
-        function createStars() {
-            const starsContainer = document.getElementById('starsContainer');
-            const starCount = 80;
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                const size = Math.random() * 2 + 0.5;
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                const duration = Math.random() * 2 + 2;
-
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = x + '%';
-                star.style.top = y + '%';
-                star.style.animationDuration = duration + 's';
-                star.style.animationDelay = Math.random() * 3 + 's';
-
-                starsContainer.appendChild(star);
-            }
-        }
-
-        createStars();
-
-        // Detectar se é mobile ou desktop
-        const isMobileDevice = () => {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        };
-
-        // Atualizar dica de acordo com o dispositivo
-        const mobileTip = document.getElementById('mobileTip');
-        const desktopTip = document.getElementById('desktopTip');
-        
-        if (isMobileDevice()) {
-            desktopTip.style.display = 'none';
-        } else {
-            mobileTip.style.display = 'none';
-        }
-
-        // Contador de cliques/presses
-        let clickCount = 0;
-        const requiredClicks = 2;
-
-        // Função para sair da tela de boas-vindas
-        const exitWelcome = () => {
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            const mainContent = document.getElementById('mainContent');
-            
-            welcomeScreen.classList.add('hidden');
-            mainContent.classList.add('show');
-        };
-
-        // Atualizar contador
-        const updateCounter = () => {
-            clickCount++;
-            const counterElement = document.getElementById('clickCounter');
-            const remaining = requiredClicks - clickCount;
-            
-            if (remaining > 0) {
-                counterElement.textContent = `${remaining} clique(s) para continuar`;
-            }
-            
-            if (clickCount >= requiredClicks) {
-                exitWelcome();
-            }
-        };
-
-        // Evento de toque (mobile) - 2 toques
-        document.addEventListener('touchstart', (event) => {
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            if (!welcomeScreen.classList.contains('hidden')) {
-                updateCounter();
-            }
-        });
-
-        // Evento de teclado (ENTER) - 2 vezes
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const welcomeScreen = document.getElementById('welcomeScreen');
-                if (!welcomeScreen.classList.contains('hidden')) {
-                    updateCounter();
-                }
-            }
-        });
-
-        // Evento de clique (alternativo para desktop)
-        document.getElementById('welcomeScreen').addEventListener('click', (event) => {
-            updateCounter();
-        });
-
-        // Funções da Lightbox
-        function openLightbox() {
-            document.getElementById('flowerLightbox').classList.add('show');
-        }
-
-        function closeLightbox() {
-            document.getElementById('flowerLightbox').classList.remove('show');
-        }
-
-        // Fechar lightbox ao clicar fora da imagem
-        document.getElementById('flowerLightbox').addEventListener('click', (event) => {
-            if (event.target.id === 'flowerLightbox') {
-                closeLightbox();
-            }
-        });
-
-        // Fechar lightbox com ESC
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeLightbox();
-            }
-        });
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
